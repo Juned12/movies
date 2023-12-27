@@ -1,0 +1,11 @@
+.navbar-wrap {
+    background-color: #242424;
+    height: 56px;
+    width: 100%;
+    position: fixed;
+    display: flex;
+    align-items: center;
+    padding-left: 20px;
+    top: 0;
+    z-index: 10;
+}
