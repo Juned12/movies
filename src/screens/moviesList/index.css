@@ -1,32 +1,10 @@
+.movies-wrap {
+    margin-left: 10px;
+    margin-right: 10px;
+}
 .movie-year-text {
     font-size: 20px;
     color: white;
     margin-top: 20px;
     margin-bottom: 10px;
-}
-.movie-card-wrap {
-    height: 250px;
-    width: 23%;
-    position: relative;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    border-radius: 4px;
-}
-.movie-list-wrap {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    flex-wrap: wrap;
-}
-.movie-poster {
-    object-fit: cover;
-    height: 100%;
-    width: 100%;
-}
-.movie-name {
-    position: absolute;
-    font-size: 16px;
-    color: white;
-    bottom: 20px;
-    left: 16px;
 }

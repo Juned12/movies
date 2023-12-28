@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { getGenreNames } from '../../services/genere';
 import "./index.css";
 
-const GenreFilter = () => {
+const GenreFilter = ({
+    selectedGenre,
+    setSelectedGenre
+}) => {
 
     const [allGenreOptions, setAllGenreOptions] = useState([]);
-    const [selectedGenre, setSelectedGenre] = useState({id:0, name: "All"})
 
     useEffect(()=>{
         const getAllGenreName = async () => {
@@ -26,11 +28,11 @@ const GenreFilter = () => {
                 allGenreOptions.map((genData)=>{
                     return (
                             <div className={
-                                selectedGenre === genData?.name ? 
+                                selectedGenre === genData ? 
                                 'genre-name active' :
                                 'genre-name inactive'
                                 } 
-                                onClick={()=> setSelectedGenre(genData?.name)} 
+                                onClick={()=> setSelectedGenre(genData)} 
                                 key={genData?.id}
                             >
                                 {genData?.name}
