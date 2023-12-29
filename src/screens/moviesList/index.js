@@ -22,8 +22,11 @@ const MoviesList = () => {
             const upOffset = 150;
             const downOffSet = 100
             if (scrollTop < upOffset && !isFetching && scrollTop < lastScrollTop && !isFetching) {
-                setCurrentYear(currentYear-1)
-                
+                if(currentYear-1 === 2011) {
+                    setCurrentYear(2010)
+                } else {
+                    setCurrentYear(currentYear-1)
+                }
             }
             if (scrollTop + windowHeight >= documentHeight - downOffSet && !isFetching && scrollTop > lastScrollTop) {
                 setCurrentYear(currentYear+1)
@@ -49,30 +52,12 @@ const MoviesList = () => {
     },[selectedGenre, allMoviesData])
 
     useEffect(()=>{
-        getMoviesRecords(2011, true)
+        setTimeout(()=>{
+            setCurrentYear(2011)
+        },500)
     },[])
-
-    function waitForElm(selector) {
-        return new Promise(resolve => {
-            if (document.getElementById(selector)) {
-                return resolve(document.getElementById(selector));
-            }
     
-            const observer = new MutationObserver(mutations => {
-                if (document.getElementById(selector)) {
-                    observer.disconnect();
-                    resolve(document.getElementById(selector));
-                }
-            });
-    
-            observer.observe(document.body, {
-                childList: true,
-                subtree: true
-            });
-        });
-    }
-    
-    const getMoviesRecords = async (year, scrollTo2012) => {
+    const getMoviesRecords = async (year) => {
         if(!moviesData[year]) {
             try {
                 setIsFetching(true)
@@ -85,25 +70,18 @@ const MoviesList = () => {
                         {[year]: movies},
                     ])
                 } else {
+                    var old_height = document.documentElement.scrollHeight;
+                    var old_scroll = window.scrollY;
                     setAllMoviesData((moviesData) => [
                         {[year]: movies},
                         ...moviesData
                     ])
-                    window.scrollTo({
-                        top: 1500,
-                    })
-                }
-                if(scrollTo2012) {
-                    waitForElm('2012').then((elm) => {
-                        var headerOffset = 130;
-                        var elementPosition = elm.getBoundingClientRect().top;
-                        var offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                    setTimeout(()=>{
                         window.scrollTo({
-                            top: offsetPosition,
-                       });
-                    });
-                }
-                
+                            top:(old_scroll + document.documentElement.scrollHeight - old_height) - 130
+                        })
+                    },20)
+                }           
             } catch (error) {
                 console.log("err",error)
             } finally {
@@ -112,7 +90,7 @@ const MoviesList = () => {
         }
     }
 
-    const genreFilter = (genreId, year) => {
+    const genreFilter = (genreId) => {
         if(genreId) {
             const newArr = []
             for (let index = 0; index < allMoviesData.length; index++) {
