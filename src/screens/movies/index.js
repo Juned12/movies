@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import "./index.css"
 
 const BASE_IMG_URL = "https://image.tmdb.org/t/p/original"
@@ -39,6 +39,12 @@ const Movies = ({
                             </div>
                         )
                     })
+                }
+                {
+                    getFilteredMovies(selectedGenreId).length === 0 &&
+                    <div className='no-movies-found-text'>
+                        No Movie Found
+                    </div>
                 }
             </div>
         </div>

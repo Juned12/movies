@@ -24,6 +24,7 @@ const GenreFilter = ({
 
   return (
     <div className='gener-filter-wrap'>
+        <div className='genre-filter-content'>
             {
                 allGenreOptions.map((genData)=>{
                     return (
@@ -40,6 +41,7 @@ const GenreFilter = ({
                     )
                 })
             }
+        </div>
     </div>
   );
 }
