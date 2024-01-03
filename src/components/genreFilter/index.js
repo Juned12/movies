@@ -20,6 +20,7 @@ const GenreFilter = ({
             }  
         }
         getAllGenreName()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
 
   return (

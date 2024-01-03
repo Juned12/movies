@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { fetchMoviesData } from '../../services/movies';
 import GenreFilter from '../../components/genreFilter';
@@ -13,7 +13,7 @@ const MoviesList = () => {
     const [selectedGenre, setSelectedGenre] = useState({ id: 0, name: "All" })
     const [yearsArray, setYearsArray] = useState([2012])
 
-    let lastScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    let lastScrollTopRef = useRef(window.pageYOffset || document.documentElement.scrollTop);
 
     useEffect(() => {
 
@@ -24,6 +24,7 @@ const MoviesList = () => {
             const upOffset = 150;
             const downOffSet = 150
             const tempArr = [...yearsArray]
+            const lastScrollTop = lastScrollTopRef.current
             // Scroll comparison to check if user is scrolling up and down
             if (scrollTop < upOffset && !isFetching && (scrollTop < lastScrollTop) && !isFetching) {
                 const firstYear = tempArr[0]
@@ -38,7 +39,7 @@ const MoviesList = () => {
                     setYearsArray(tempArr)
                 }
             }
-            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+            lastScrollTopRef.current = scrollTop <= 0 ? 0 : scrollTop;
         };
 
         window.addEventListener('scroll', handleScroll);
@@ -46,6 +47,7 @@ const MoviesList = () => {
         return () => {
             window.removeEventListener('scroll', handleScroll);
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isFetching]);
 
     
@@ -59,6 +61,7 @@ const MoviesList = () => {
 
     useEffect(()=>{
         getMoviesData(yearsArray)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[yearsArray])
 
     function fromHTML(html, trim = true) {
@@ -129,7 +132,8 @@ const MoviesList = () => {
     const getMoviesList = (year) => {
         for (let index = 0; index < allMoviesData.length; index++) {
             const movieYear = Object.keys(allMoviesData[index])[0]
-            if(movieYear == year) {
+            console.log("typeonf",typeof movieYear, typeof year)
+            if(Number(movieYear) === year) {
                 return allMoviesData[index][movieYear]
             }
         }
@@ -140,6 +144,7 @@ const MoviesList = () => {
         if(selectedGenre?.id) {
             updateDynamicallyCreatedNodes(selectedGenre)
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[selectedGenre])
 
     const updateDynamicallyCreatedNodes = (selectedGenre) => {
