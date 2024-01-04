@@ -90,6 +90,7 @@ const MoviesList = () => {
         // Get Movies list and add update it to dom
         try {
             setIsFetching(true)
+            const firstMovie = document.querySelectorAll('.first-node')[0];
             const idx2012 = yearsArr.indexOf(2012)
             const movies = [...moviesAfter2011]
             for (let index = yearsArr.length-1; index >= idx2012; index--) {
@@ -103,10 +104,11 @@ const MoviesList = () => {
                 setMoviesAfter2011([...movies])
             }
 
-            const firstMovie = document.querySelectorAll('.first-node')[0];
             for (let index = 0; index < idx2012; index++) {
                 const movieElement = document.getElementById(yearsArr[index])
                 if(!movieElement && firstMovie) {
+                    const loadingNode = fromHTML("<div class='loading-text' id='loading-top'>Fetching More Movies...</div>")
+                    document.body.insertBefore(loadingNode, document.body.firstChild);
                     const moviesRes = await dataAPI(yearsArr[index])
                     setAllMoviesData([
                         ...allMoviesData,
@@ -121,10 +123,14 @@ const MoviesList = () => {
                     // Prepend to avoid shifting scroll to top 
                     document.body.insertBefore(newNode, document.body.firstChild);
                     // setting the srcoll to the last first element in DOM
-                    document.documentElement.scrollTop = document.body.scrollTop = firstMovie.offsetTop - 130;
+                    document.documentElement.scrollTop = document.body.scrollTop = firstMovie.offsetTop - 180;
                 }   
             }
         } finally {
+            const loadingElem = document.getElementById('loading-top')
+            if(loadingElem) {
+                loadingElem.remove()
+            }
             setIsFetching(false)
         }
     }
@@ -132,7 +138,6 @@ const MoviesList = () => {
     const getMoviesList = (year) => {
         for (let index = 0; index < allMoviesData.length; index++) {
             const movieYear = Object.keys(allMoviesData[index])[0]
-            console.log("typeonf",typeof movieYear, typeof year)
             if(Number(movieYear) === year) {
                 return allMoviesData[index][movieYear]
             }
@@ -141,9 +146,7 @@ const MoviesList = () => {
     }
 
     useEffect(()=>{
-        if(selectedGenre?.id) {
-            updateDynamicallyCreatedNodes(selectedGenre)
-        }
+        updateDynamicallyCreatedNodes(selectedGenre)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[selectedGenre])
 
@@ -178,12 +181,20 @@ const MoviesList = () => {
                     moviesAfter2011.map((movData, idx) => {
                         const movYear = Object.keys(movData)[0]
                         return (
-                            <Movies
-                                movieYear={movYear}
-                                movieList={movData[movYear]}
-                                key={`${movYear}${idx}`}
-                                selectedGenreId={selectedGenre?.id}
-                            />
+                            <React.Fragment key={movYear}>
+                                <Movies
+                                    movieYear={movYear}
+                                    movieList={movData[movYear]}
+                                    key={`${movYear}${idx}`}
+                                    selectedGenreId={selectedGenre?.id}
+                                />
+                                {
+                                    isFetching &&
+                                    <div className='loading-text'>
+                                        Fetching More Movies...
+                                    </div>
+                                }
+                            </React.Fragment>
                         )
                     })
                 }
